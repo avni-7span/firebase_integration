@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "980766215513",
-    "project_id": "login-management-4c88b",
-    "storage_bucket": "login-management-4c88b.appspot.com"
+    "project_number": "697384502128",
+    "project_id": "login-management-37581",
+    "storage_bucket": "login-management-37581.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:980766215513:android:eed910a2d5fb6bad921048",
+        "mobilesdk_app_id": "1:697384502128:android:096a023d2b0642eabac5b5",
         "android_client_info": {
-          "package_name": "com.example.app"
+          "package_name": "com.example.firebase"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCoSfSHkLHymfrlhqyW0-qXnabv1ScOsrc"
+          "current_key": "AIzaSyAO3kg8cgqV_p2VAU7hZhSpqkDezkhRSPM"
         }
       ],
       "services": {

@@ -81,15 +81,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () async {
+                  onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      String finalEmail =
-                          await emailStreamController.stream.last;
-                      String finalPassword =
-                          await passwordStreamController.stream.last;
-                      print(
-                          'final email : $finalEmail , final pass : $finalPassword');
-                      //FirebaseFunctions.createUser(finalEmail,finalPassword);
+                      FirebaseFunctions.createUser(
+                          currentEmail, currentPassword);
                     }
                   },
                   child: const Text('Sign Up'),
