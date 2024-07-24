@@ -12,21 +12,22 @@ class FirebaseFunctions {
         print('The account already exists for that email.');
       }
     } catch (e) {
-      print(e);
+      print('Exception aavyu : $e');
     }
   }
 
   static Future<void> loginUser(String email, String password) async {
     try {
-      // UserCredential userCredential = await FirebaseAuth.instance
-      await FirebaseAuth.instance
+      UserCredential userCredential = await FirebaseAuth.instance
+          // await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('No user found for that email.');
+        print('user not found');
       } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
+        print('wrong password');
       }
     }
+    return null;
   }
 }

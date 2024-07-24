@@ -3,6 +3,7 @@ import 'package:firebase/firebase%20functions/firebase_functions.dart';
 import 'package:firebase/screens/profile_screen.dart';
 import 'package:firebase/screens/sign_up_screen.dart';
 import 'package:firebase/validators/validators.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -20,8 +21,10 @@ class _SignUpScreenState extends State<LoginScreen> {
   final StreamController<String> _passwordStreamController =
       StreamController<String>();
 
-  String _currentEmail = '';
+  String currentEmail = '';
   String _currentPassword = '';
+
+  //final user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -29,7 +32,7 @@ class _SignUpScreenState extends State<LoginScreen> {
 
     _emailStreamController.stream.listen(
       (email) {
-        _currentEmail = email;
+        currentEmail = email;
       },
     );
     _passwordStreamController.stream.listen(
@@ -37,6 +40,21 @@ class _SignUpScreenState extends State<LoginScreen> {
         _currentPassword = password;
       },
     );
+
+    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const ProfileScreen(),
+          ),
+        );
+      } else {
+        //print('==');
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Something went wrong')));
+      }
+    });
   }
 
   @override
@@ -61,33 +79,41 @@ class _SignUpScreenState extends State<LoginScreen> {
                     _emailStreamController.sink.add(email);
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: const InputDecoration(hintText: 'Enter Email : '),
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    label: Text('Enter Email'),
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   validator: Validators.passwordValidator,
+                  obscureText: true,
                   onChanged: (password) {
                     _passwordStreamController.sink.add(password);
                   },
                   autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration:
-                      const InputDecoration(hintText: 'Enter Password : '),
+                  decoration: const InputDecoration(
+                    label: Text('Enter Password'),
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      await FirebaseFunctions.loginUser(
-                          _currentEmail, _currentPassword);
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProfileScreen(),
-                        ),
-                      );
+                      try {
+                        await FirebaseFunctions.loginUser(
+                            currentEmail, _currentPassword);
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Could not log it')));
+                      }
                     } else {
-                      const SnackBar(
-                        content: Text('Enter valid Information'),
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Enter valid Information'),
+                        ),
                       );
                     }
                   },
@@ -97,7 +123,7 @@ class _SignUpScreenState extends State<LoginScreen> {
                 InkWell(
                   child: const Text(
                     'Create a new account?',
-                    style: TextStyle(fontSize: 20),
+                    style: TextStyle(fontSize: 20, color: Colors.blue),
                   ),
                   onTap: () {
                     Navigator.pushReplacement(
