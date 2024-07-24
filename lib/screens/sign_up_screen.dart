@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase/firebase%20functions/firebase_functions.dart';
+import 'package:firebase/screens/login_screen.dart';
 import 'package:firebase/validators/validators.dart';
 import 'package:flutter/material.dart';
 
@@ -11,26 +12,27 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
 
-  StreamController<String> emailStreamController = StreamController<String>();
-  StreamController<String> passwordStreamController =
+  final StreamController<String> _emailStreamController =
+      StreamController<String>();
+  final StreamController<String> _passwordStreamController =
       StreamController<String>();
 
-  String currentEmail = '';
-  String currentPassword = '';
+  String _currentEmail = '';
+  String _currentPassword = '';
 
   @override
   void initState() {
     super.initState();
-    emailStreamController.stream.listen(
+    _emailStreamController.stream.listen(
       (email) {
-        currentEmail = email;
+        _currentEmail = email;
       },
     );
-    passwordStreamController.stream.listen(
+    _passwordStreamController.stream.listen(
       (password) {
-        currentPassword = password;
+        _currentPassword = password;
       },
     );
   }
@@ -38,8 +40,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   void dispose() {
     super.dispose();
-    emailStreamController.close();
-    passwordStreamController.close();
+    _emailStreamController.close();
+    _passwordStreamController.close();
   }
 
   @override
@@ -51,7 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
       body: Center(
         child: Form(
-          key: formKey,
+          key: _formKey,
           child: Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
@@ -65,7 +67,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   validator: Validators.emailValidator,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   onChanged: (email) {
-                    emailStreamController.sink.add(email);
+                    _emailStreamController.sink.add(email);
                   },
                   decoration: const InputDecoration(hintText: 'Enter Email : '),
                 ),
@@ -74,21 +76,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   validator: Validators.passwordValidator,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   onChanged: (password) {
-                    passwordStreamController.sink.add(password);
+                    _passwordStreamController.sink.add(password);
                   },
                   decoration: const InputDecoration(
                       hintText: 'Create Account Password : '),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: () {
-                    if (formKey.currentState!.validate()) {
-                      FirebaseFunctions.createUser(
-                          currentEmail, currentPassword);
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await FirebaseFunctions.createUser(
+                          _currentEmail, _currentPassword);
                     }
                   },
                   child: const Text('Sign Up'),
                 ),
+                const SizedBox(height: 10),
+                InkWell(
+                  child: const Text(
+                    'Already have an account?',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  },
+                )
               ],
             ),
           ),

@@ -1,7 +1,7 @@
 class Validators {
   static String? emailValidator(String? value) {
     if (value!.isEmpty ||
-        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}').hasMatch(value!)) {
+        !RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}').hasMatch(value)) {
       return 'Enter valid Email';
     } else {
       return null;
